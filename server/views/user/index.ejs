@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../layout/links') %>
+</head>
+
+<body>
+  <script>
+    function areYouSureStatus(id) {
+      // alert(id)
+      Swal.fire({
+        title: "Are you sure ?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ACC646",
+        cancelButtonColor: "#CBCEC9",
+        confirmButtonText: "OK",
+        cancelButtonText: "CANCEL",
+        toast: true,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          window.location = id;
+        } else if (result.isDenied) {
+          return;
+        }
+      });
+    }
+  </script>
+
+
+  <div class="container-fluid position-relative d-flex p-0">
+    <!-- Sidebar Start -->
+    <%- include('../layout/sidebar') %>
+      <!-- Sidebar End -->
+      <!-- Content Start -->
+      <div class="content">
+        <!-- Navbar Start -->
+        <%- include('../layout/nav') %>
+          <!-- Navbar End -->
+          <div class="container-fluid py-5 px-4 ">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><button type="button"
+                      class="btn btn-sm btn-sm-square btn-outline-light m-2"><i class="fa fa-home"></i></button></a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="/user">Users</a></li>
+              </ol>
+            </nav>
+            <table class="table align-middle dt-responsive nowrap py-3" style="width: 100%" id="usertable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Phone</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Created At</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% user.forEach((row,index)=> { %>
+
+                  <tr>
+                    <th scope="row">
+                      <%= index+1 %>
+                    </th>
+                    <td>
+                      <%= row.firstname +" "+ row.lastname %>
+                    </td>
+                    <td>
+                      <%= row.email %>
+                    </td>
+                    <td>
+                      <% if (row.phone!='') { %>
+                        <%= row.phone %>
+                      <% } else { %>
+                          Not Mentioned
+                   <%   } %>
+                     
+                    </td>
+                    <td>
+                      <% if (row.address!='' || row.pincode!='' ) { %>
+                        <%= row.address +" , "+ row.pincode %>
+                      <% } else { %>
+                          Not Mentioned
+                   <%   } %>
+                     
+                    </td>
+                    <td>
+                      <% 
+                      var timestamp =  row.created.toLocaleString(); 
+                      
+                      %>
+                      <%= timestamp  %> 
+                    </td>
+                    <td>
+                      <% if(row.status==1){ %>
+                        <a onclick=" areYouSureStatus('/user/inactive/<%=row._id %>')" class="cursor-pointer"
+                        data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to In-active"><span
+                          class="badge bg-success cursor-pointer">Active</span></a>
+                        <% } else{ %>
+                          <a onclick="areYouSureStatus('/user/active/<%= row._id  %>')" class="cursor-pointer"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom" title="Click to Active"><span
+                              class="badge bg-danger cursor-pointer">InActive</span></a>
+                          <% } %>
+                    </td>
+
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+          <%- include('../layout/footer') %>
+
+      </div>
+      <%- include('../layout/scripts') %>
+        <script>
+          $(document).ready(function () {
+            $("#usertable").DataTable();
+          });
+        </script>
+        <script>
+          function image(image) {
+            var url = image;
+            window.open(url, 'Documents', ['menubar=yes,scrollbars=yes,controlbox=yes', 'top=10,left=150,width=1050,height=650']);
+            return;
+          }
+        </script>
+</body>
+
+</html>
